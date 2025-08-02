@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Cache -
+// Cache - Creates a new cache instance with the specified interval.
 type Cache struct {
 	cache map[string]cacheEntry
 	mux   *sync.Mutex
@@ -16,7 +16,7 @@ type cacheEntry struct {
 	val       []byte
 }
 
-// NewCache -
+// NewCache - Creates a new cache instance with the specified interval.
 func NewCache(interval time.Duration) Cache {
 	c := Cache{
 		cache: make(map[string]cacheEntry),
@@ -28,7 +28,7 @@ func NewCache(interval time.Duration) Cache {
 	return c
 }
 
-// Add -
+// Add - Adds a value to the cache.
 func (c *Cache) Add(key string, value []byte) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
@@ -38,11 +38,14 @@ func (c *Cache) Add(key string, value []byte) {
 	}
 }
 
-// Get -
+// Get - Retrieves a value from the cache.
 func (c *Cache) Get(key string) ([]byte, bool) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 	val, ok := c.cache[key]
+	if !ok {
+		return nil, false
+	}
 	return val.val, ok
 }
 
