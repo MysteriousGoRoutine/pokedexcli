@@ -1,17 +1,19 @@
-package main
+package cmd
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/MysteriousGoRoutine/pokedexcli/internal/config"
 )
 
-func commandExplore(cfg *config, args ...string) error {
+func CommandExplore(cfg *config.Config, args ...string) error {
 	if len(args) != 1 {
 		return errors.New("You must provide a location name")
 	}
 
 	name := args[0]
-	location, err := cfg.pokeapiClient.GetLocation(name)
+	location, err := cfg.PokeapiClient.GetLocation(name)
 	if err != nil {
 		return err
 	}

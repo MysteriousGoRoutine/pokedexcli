@@ -4,25 +4,18 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 
-	"github.com/MysteriousGoRoutine/pokedexcli/internal/pokeapi"
+	"github.com/MysteriousGoRoutine/pokedexcli/cmd"
+	"github.com/MysteriousGoRoutine/pokedexcli/internal/config"
 )
 
-type config struct {
-	pokeapiClient    pokeapi.Client
-	caughtPokemon    map[string]pokeapi.Pokemon
-	nextLocationsURL *string
-	prevLocationsURL *string
-}
-
-func startRepl(cfg *config) {
+func startRepl(cfg *config.Config) {
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
 		reader.Scan()
 
-		words := cleanInput(reader.Text())
+		words := cmd.CleanInput(reader.Text())
 		if len(words) == 0 {
 			continue
 		}
@@ -33,9 +26,9 @@ func startRepl(cfg *config) {
 			args = words[1:]
 		}
 
-		command, exists := getCommands()[commandName]
+		command, exists := cmd.GetCommands()[commandName]
 		if exists {
-			err := command.callback(cfg, args...)
+			err := command.Callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -44,62 +37,5 @@ func startRepl(cfg *config) {
 			fmt.Println("Unknown command")
 			continue
 		}
-	}
-}
-
-func cleanInput(text string) []string {
-	output := strings.ToLower(text)
-	words := strings.Fields(output)
-	return words
-}
-
-type cliCommand struct {
-	name        string
-	description string
-	callback    func(*config, ...string) error
-}
-
-func getCommands() map[string]cliCommand {
-	return map[string]cliCommand{
-		"help": {
-			name:        "help",
-			description: "Displays a help message",
-			callback:    commandHelp,
-		},
-		"explore": {
-			name:        "explore <location name>",
-			description: "Explore a location",
-			callback:    commandExplore,
-		},
-		"inspect": {
-			name:        "inspect <pokemon_name>",
-			description: "View details about a caught Pokemon",
-			callback:    commandInspect,
-		},
-		"catch": {
-			name:        "catch <pokemon name>",
-			description: "Catch a pokemon",
-			callback:    commandCatch,
-		},
-		"pokedex": {
-			name:        "pokedex",
-			description: "prints a list of all the names of the Pokemon the user has caught",
-			callback:    commandPokedex,
-		},
-		"map": {
-			name:        "map",
-			description: "Get the next page of locations",
-			callback:    commandMapf,
-		},
-		"mapb": {
-			name:        "mapb",
-			description: "Get the previous page of locations",
-			callback:    commandMapb,
-		},
-		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
-		},
 	}
 }

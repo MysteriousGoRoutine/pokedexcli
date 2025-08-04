@@ -1,18 +1,20 @@
-package main
+package cmd
 
 import (
 	"errors"
 	"fmt"
 	"math/rand"
+
+	"github.com/MysteriousGoRoutine/pokedexcli/internal/config"
 )
 
-func commandCatch(cfg *config, args ...string) error {
+func CommandCatch(cfg *config.Config, args ...string) error {
 	if len(args) != 1 {
 		return errors.New("you must provide a pokemon name")
 	}
 
 	name := args[0]
-	pokemon, err := cfg.pokeapiClient.GetPokemon(name)
+	pokemon, err := cfg.PokeapiClient.GetPokemon(name)
 	if err != nil {
 		return err
 	}
@@ -27,6 +29,6 @@ func commandCatch(cfg *config, args ...string) error {
 
 	fmt.Printf("%s was caught!\n", pokemon.Name)
 
-	cfg.caughtPokemon[pokemon.Name] = pokemon
+	cfg.CaughtPokemon[pokemon.Name] = pokemon
 	return nil
 }

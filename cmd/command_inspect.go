@@ -1,17 +1,19 @@
-package main
+package cmd
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/MysteriousGoRoutine/pokedexcli/internal/config"
 )
 
-func commandInspect(cfg *config, args ...string) error {
+func CommandInspect(cfg *config.Config, args ...string) error {
 	if len(args) != 1 {
 		return errors.New("You must provide a pokemon name")
 	}
 
 	name := args[0]
-	pokemon, ok := cfg.caughtPokemon[name]
+	pokemon, ok := cfg.CaughtPokemon[name]
 	if !ok {
 		return errors.New("you have not caught that pokemon")
 	}
@@ -30,19 +32,3 @@ func commandInspect(cfg *config, args ...string) error {
 
 	return nil
 }
-
-/*
-Name: pidgey
-Height: 3
-Weight: 18
-Stats:
-  -hp: 40
-  -attack: 45
-  -defense: 40
-  -special-attack: 35
-  -special-defense: 35
-  -speed: 56
-Types:
-  - normal
-  - flying
-*/

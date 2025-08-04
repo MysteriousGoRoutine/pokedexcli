@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/MysteriousGoRoutine/pokedexcli/cmd"
 )
 
 func TestCleanInput(t *testing.T) {
@@ -28,7 +30,7 @@ func TestCleanInput(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		actual := cleanInput(c.input)
+		actual := cmd.CleanInput(c.input)
 		if len(actual) != len(c.expected) {
 			t.Errorf("lengths don't match: '%v' vs '%v'", actual, c.expected)
 			continue
